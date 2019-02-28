@@ -74,6 +74,7 @@
 import { validUsername } from '@/utils/validate'
 import LangSelect from '@/components/LangSelect'
 import SocialSign from './socialsignin'
+import { setToken } from '@/utils/auth'
 
 export default {
   name: 'Login',
@@ -134,8 +135,9 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('LoginByUsername', this.loginForm).then(() => {
+          this.api.v1.user.login(this.loginForm).then((res) => {
             this.loading = false
+            setToken(res.data.token)
             this.$router.push({ path: this.redirect || '/' })
           }).catch(() => {
             this.loading = false
