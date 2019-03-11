@@ -113,14 +113,36 @@ export default new Router({
 
 export const asyncRouterMap = [
   {
+    path: '/lesson',
+    component: Layout,
+    redirect: '/lesson/index',
+    alwaysShow: true, // will always show the root menu
+    meta: {
+      title: '课程管理',
+      icon: 'list',
+      roles: ['guava'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/lesson/index'),
+        name: '课程列表',
+        meta: {
+          title: '课程列表',
+          roles: ['guava']
+        }
+      }
+    ]
+  },
+  {
     path: '/permission',
     component: Layout,
     redirect: '/permission/index',
     alwaysShow: true, // will always show the root menu
     meta: {
-      title: 'permission',
+      title: '权限',
       icon: 'lock',
-      roles: ['admin', 'editor'] // you can set roles in root nav
+      roles: ['guava'] // you can set roles in root nav
     },
     children: [
       {
@@ -129,7 +151,7 @@ export const asyncRouterMap = [
         name: 'PagePermission',
         meta: {
           title: 'pagePermission',
-          roles: ['admin'] // or you can only set roles in sub nav
+          roles: ['guava']
         }
       },
       {
