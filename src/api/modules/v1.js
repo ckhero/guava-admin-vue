@@ -8,7 +8,8 @@ const v1 = {
     list: data => request('v1/menu/list', 'post', data)
   },
   lesson: {
-    list: data => request('v1/lesson/list', 'post', data)
+    list: data => request('v1/lesson/list', 'post', data),
+    create: data => request('v1/lesson/create', 'post', data)
   }
 }
 
