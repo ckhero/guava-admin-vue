@@ -6,6 +6,9 @@ const v1 = {
   },
   menu: {
     list: data => request('v1/menu/list', 'post', data)
+  },
+  lesson: {
+    list: data => request('v1/lesson/list', 'post', data)
   }
 }
 
