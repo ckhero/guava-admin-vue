@@ -16,22 +16,22 @@
       fit
       highlight-current-row
       style="width: 100%;">
-      <el-table-column :label="$t('table.id')" prop="id" sortable="custom" align="center" width="65">
+      <el-table-column :label="$t('table.id')" prop="id" align="center" width="65">
         <template slot-scope="scope">
           <span>{{ scope.row.lesson_id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="课程名字">
+      <el-table-column label="课程名字" >
         <template slot-scope="scope">
           <span class="link-type">{{ scope.row.lesson_name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="课程类型">
+      <el-table-column label="课程类型" align="center">
         <template slot-scope="scope">
           <span><el-tag :type="scope.row.lesson_type | statusFilter">{{ scope.row.lesson_type | typeFilter }}</el-tag></span>
         </template>
       </el-table-column>
-      <el-table-column label="课程排序">
+      <el-table-column label="课程排序" align="center">
         <template slot-scope="scope">
           <span><el-tag>{{ scope.row.lesson_sort | sortFilter }}</el-tag></span>
         </template>
