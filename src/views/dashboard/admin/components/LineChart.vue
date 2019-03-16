@@ -78,10 +78,10 @@ export default {
         this.__resizeHandler()
       }
     },
-    setOptions({ expectedData, actualData } = {}) {
+    setOptions({ expectedData, actualData, dateRange } = {}) {
       this.chart.setOption({
         xAxis: {
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          data: dateRange,
           boundaryGap: false,
           axisTick: {
             show: false
@@ -89,7 +89,7 @@ export default {
         },
         grid: {
           left: 10,
-          right: 10,
+          right: 50,
           bottom: 20,
           top: 30,
           containLabel: true
@@ -107,7 +107,7 @@ export default {
           }
         },
         legend: {
-          data: ['expected', 'actual']
+          data: []
         },
         series: [{
           name: 'expected', itemStyle: {

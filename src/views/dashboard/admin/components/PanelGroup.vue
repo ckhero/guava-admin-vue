@@ -6,19 +6,8 @@
           <svg-icon icon-class="peoples" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">New Visits</div>
-          <count-to :start-val="0" :end-val="102400" :duration="2600" class="card-panel-num"/>
-        </div>
-      </div>
-    </el-col>
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('messages')">
-        <div class="card-panel-icon-wrapper icon-message">
-          <svg-icon icon-class="message" class-name="card-panel-icon" />
-        </div>
-        <div class="card-panel-description">
-          <div class="card-panel-text">Messages</div>
-          <count-to :start-val="0" :end-val="81212" :duration="3000" class="card-panel-num"/>
+          <div class="card-panel-text">新注册</div>
+          <count-to :start-val="0" :end-val="newVisitisData" :duration="2600" class="card-panel-num"/>
         </div>
       </div>
     </el-col>
@@ -28,19 +17,8 @@
           <svg-icon icon-class="money" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">Purchases</div>
-          <count-to :start-val="0" :end-val="9280" :duration="3200" class="card-panel-num"/>
-        </div>
-      </div>
-    </el-col>
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('shoppings')">
-        <div class="card-panel-icon-wrapper icon-shopping">
-          <svg-icon icon-class="shopping" class-name="card-panel-icon" />
-        </div>
-        <div class="card-panel-description">
-          <div class="card-panel-text">Shoppings</div>
-          <count-to :start-val="0" :end-val="13600" :duration="3600" class="card-panel-num"/>
+          <div class="card-panel-text">收入</div>
+          <count-to :start-val="0" :end-val="purchasesData" :duration="3200" class="card-panel-num"/>
         </div>
       </div>
     </el-col>
@@ -53,6 +31,34 @@ import CountTo from 'vue-count-to'
 export default {
   components: {
     CountTo
+  },
+  props: {
+    new_visitis: {
+      type: String,
+      default: function() { return 0 }
+    },
+    purchases: {
+      type: String,
+      default: function() { return 0 }
+    }
+  },
+  data() {
+    return {
+      newVisitisData: 0,
+      purchasesData: 0
+    }
+  },
+  watch: {
+    new_visitis() {
+      this.newVisitisData = this.new_visitis
+    },
+    purchases() {
+      this.purchasesData = this.purchases
+    }
+  },
+  mounted() {
+    this.newVisitisData = this.new_visitis
+    this.purchasesData = this.purchases
   },
   methods: {
     handleSetLineChartData(type) {

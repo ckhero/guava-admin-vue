@@ -16,6 +16,9 @@ const v1 = {
   },
   ptUser: {
     list: data => request('v1/pt-user/list', 'post', data)
+  },
+  dashboard: {
+    index: data => request('v1/dashboard/index', 'post', data)
   }
 }
 
