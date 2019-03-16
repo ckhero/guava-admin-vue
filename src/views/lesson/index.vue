@@ -46,36 +46,69 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="课程名字" prop="lesson_name">
-          <el-input v-model="temp.lesson_name" placeholder="请输入课程名字"/>
-        </el-form-item>
-        <el-form-item label="课程类型" prop="lesson_type">
-          <el-select v-model="temp.lesson_type" class="filter-item" placeholder="请选择课程类型">
-            <el-option v-for="item in lessonTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="课程排序" prop="lesson_sort">
-          <el-input-number v-model="temp.lesson_sort" :min="0" :max="100" :disabled="(dialogStatus!=='create')" label="第几天的课程"/>
-        </el-form-item>
-        <!--<el-form-item :label="$t('table.date')" prop="timestamp">-->
-        <!--<el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date"/>-->
-        <!--</el-form-item>-->
-        <!--<el-form-item :label="$t('table.title')" prop="title">-->
-        <!--<el-input v-model="temp.title"/>-->
-        <!--</el-form-item>-->
-        <!--<el-form-item :label="$t('table.status')">-->
-        <!--<el-select v-model="temp.status" class="filter-item" placeholder="Please select">-->
-        <!--<el-option v-for="item in statusOptions" :key="item" :label="item" :value="item"/>-->
-        <!--</el-select>-->
-        <!--</el-form-item>-->
-        <!--<el-form-item :label="$t('table.importance')">-->
-        <!--<el-rate v-model="temp.importance" :colors="['#99A9BF', '#F7BA2A', '#FF9900']" :max="3" style="margin-top:8px;"/>-->
-        <!--</el-form-item>-->
-        <!--<el-form-item :label="$t('table.remark')">-->
-        <!--<el-input :autosize="{ minRows: 2, maxRows: 4}" v-model="temp.remark" type="textarea" placeholder="Please input"/>-->
-        <!--</el-form-item>-->
-      </el-form>
+      <el-tabs v-model="activeName" style="margin-left:50px;">
+        <el-tab-pane label="课程信息" name="lessonInfo" >
+          <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px">
+            <el-form-item label="课程名字" prop="lesson_name" style="width: 400px;">
+              <el-input v-model="temp.lesson_name" placeholder="请输入课程名字"/>
+            </el-form-item>
+            <el-form-item label="课程类型" prop="lesson_type">
+              <el-select v-model="temp.lesson_type" class="filter-item" placeholder="请选择课程类型">
+                <el-option v-for="item in lessonTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="课程排序" prop="lesson_sort">
+              <el-input-number v-model="temp.lesson_sort" :min="0" :max="100" :disabled="(dialogStatus!=='create')" label="第几天的课程"/>
+            </el-form-item>
+            <datum :datum="temp.datum" :type="datumType" style="width: 400px;"/>
+          </el-form>
+        </el-tab-pane>
+        <el-tab-pane label="课程题目" name="questionList">
+          <el-row v-for="(item, questionKey) in temp.questions" :key="item.lesson_question_id" :gutter="20" style="line-height: 40px;border-bottom:1px solid #C0C4CC; padding: 10px 0px">
+            <el-col :span="4" :offset="1">
+              <label>{{ item.lesson_question_sort }} . 题目类型选择</label>
+            </el-col>
+            <el-col :span="16">
+              <div class="grid-content bg-purple">
+                <el-radio-group v-model="item.lesson_question_type" @change="handleRadioChanges">
+                  <el-radio v-for="(opt) in options" :key="opt.label" :label="String(opt.label)">
+                    {{ opt.value }}
+                  </el-radio>
+                </el-radio-group>
+              </div>
+            </el-col>
+            <el-col v-if="( item.lesson_question_type !== 'img')" :offset="5" >
+              <el-col :span="16">
+                <el-input v-model="item.lesson_question_detail" type="textarea" />
+              </el-col>
+            </el-col>
+            <el-col v-if="( item.lesson_question_type === 'img')" :offset="5" >
+              <el-col :span="16">
+                <guavaUpload :image_url.sync="item.lesson_question_detail"/>
+              </el-col>
+            </el-col>
+            <el-col :span="4" :offset="1" style="padding-top: 10px;">
+              <label>选项</label>
+            </el-col>
+            <el-col :span="16" style="padding-left: 0px;">
+              <el-radio-group v-model="item.lesson_question_right_option" @change="handleRadioChanges">
+                <el-col v-for="(option) in item.lesson_question_items" :key="option.lesson_question_item_id" style="padding-left: 0px; margin-top: 20px">
+                  <el-col :span="3" style="line-height: 30px"><el-radio :label="option.lesson_question_item_option">{{ option.lesson_question_item_option }}</el-radio></el-col>
+                  <el-col :span="12">
+                    <el-input v-model="option.lesson_question_item_detail" type="textarea" />
+                  </el-col>
+                </el-col>
+              </el-radio-group>
+            </el-col>
+            <el-col :span="24" :offset="8" style="padding: 2px 0px">
+              <i class="el-icon-plus" style="cursor:pointer;" @click="addOption(questionKey)">添加题目选项</i>
+            </el-col>
+          </el-row>
+          <el-col :offset="8">
+            <el-button icon="el-icon-plus" type="primary" style="margin-top: 10px" @click="addQuestion">添加题目</el-button>
+          </el-col>
+        </el-tab-pane>
+      </el-tabs>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
         <el-button type="primary" @click="updateData()">确认提交</el-button>
@@ -99,6 +132,8 @@
 import { createArticle } from '@/api/article'
 import waves from '@/directive/waves' // Waves directive
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import Datum from '@/components/GuavaDatum'
+import GuavaUpload from '@/components/GuavaUpload'
 
 const lessonTypeOptions = [
   { key: 'english', display_name: '英语' },
@@ -113,7 +148,11 @@ const lessonTypeKeyValue = lessonTypeOptions.reduce((acc, cur) => {
 
 export default {
   name: 'ComplexTable',
-  components: { Pagination },
+  components: {
+    Pagination,
+    Datum,
+    GuavaUpload
+  },
   directives: { waves },
   filters: {
     statusFilter(status) {
@@ -157,15 +196,21 @@ export default {
         lesson_name: null
       },
       lessonTypeOptions,
+      lessonQuestions: {},
+      datumType: 'lesson',
+      activeNames: ['1'],
+      activeName: 'lessonInfo',
       importanceOptions: [1, 2, 3],
-      sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
-      statusOptions: ['published', 'draft', 'deleted'],
+      radio: 'text',
+      options: [{ label: 'text', value: '文字' }, { label: 'img', value: '图片' }],
       showReviewer: false,
       temp: {
         lesson_id: null,
         lesson_type: null,
         lesson_name: null,
+        datum: {},
         lesson_sort: 0,
+        questions: [],
         id: undefined,
         importance: 1,
         remark: '',
@@ -199,7 +244,6 @@ export default {
       this.api.v1.lesson.list(this.listQuery).then((res) => {
         this.total = res.data.total
         this.list = res.data.list
-        console.log(this.list)
       })
       this.listLoading = false
     },
@@ -208,18 +252,17 @@ export default {
       this.getList()
     },
     resetTemp() {
+      this.activeName = 'lessonInfo'
       this.temp = {
         lesson_id: null,
         lesson_type: null,
         lesson_name: null,
         lesson_sort: 0,
-        id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        status: 'published',
-        type: ''
+        datum: {
+          datum_detail_type: 'img',
+          datum_detail: ''
+        },
+        questions: []
       }
     },
     handleCreate() {
@@ -250,10 +293,10 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
-      console.log(this.temp)
       this.temp.timestamp = new Date(this.temp.timestamp)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
+      console.log(this.temp.questions)
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
@@ -270,28 +313,45 @@ export default {
         this.dialogFormVisible = false
         this.getList()
       })
-      // this.$refs['dataForm'].validate((valid) => {
-      //   if (valid) {
-      //     const tempData = Object.assign({}, this.temp)
-      //     tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-      //     updateArticle(tempData).then(() => {
-      //       for (const v of this.list) {
-      //         if (v.id === this.temp.id) {
-      //           const index = this.list.indexOf(v)
-      //           this.list.splice(index, 1, this.temp)
-      //           break
-      //         }
-      //       }
-      //       this.dialogFormVisible = false
-      //       this.$notify({
-      //         title: '成功',
-      //         message: '更新成功',
-      //         type: 'success',
-      //         duration: 2000
-      //       })
-      //     })
-      //   }
-      // })
+    },
+    handleRadioChanges(type) {
+      console.log(type)
+    },
+    addOption(questionKey) {
+      const words = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+      const optionsNum = this.temp.questions[questionKey].lesson_question_items.length
+      if (optionsNum > 6) {
+        this.$notify({
+          title: '失败',
+          message: '最多添加7个选项',
+          type: 'error',
+          duration: 2000
+        })
+      } else {
+        const newOption = Object.assign({}, { lesson_question_item_option: words[optionsNum], lesson_question_item_detail: '' })
+        this.temp.questions[questionKey].lesson_question_items.push(newOption)
+      }
+    },
+    addQuestion() {
+      const questionNum = this.temp.questions.length + 1
+      const defaultQuestion = {
+        lesson_question_items: [
+          {
+            lesson_question_item_option: 'A',
+            lesson_question_item_detail: ''
+          },
+          {
+            lesson_question_item_option: 'B',
+            lesson_question_item_detail: ''
+          }
+        ],
+        lesson_question_detail: '',
+        lesson_question_sort: questionNum,
+        lesson_question_type: 'text',
+        lesson_question_right_option: 'A'
+      }
+      const question = Object.assign({}, defaultQuestion)
+      this.temp.questions.push(question)
     }
   }
 }
