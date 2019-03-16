@@ -10,6 +10,12 @@ const v1 = {
   lesson: {
     list: data => request('v1/lesson/list', 'post', data),
     create: data => request('v1/lesson/create', 'post', data)
+  },
+  order: {
+    list: data => request('v1/order/list', 'post', data)
+  },
+  ptUser: {
+    list: data => request('v1/pt-user/list', 'post', data)
   }
 }
 

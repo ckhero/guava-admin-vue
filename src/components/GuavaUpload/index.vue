@@ -4,7 +4,7 @@
       :show-file-list="false"
       :on-success="handleAvatarSuccess"
       :before-upload="beforeAvatarUpload"
-      action="http://guava-admin.com/v1/upload/save"
+      action="http://guava.51qwer.com/v1/upload/save"
       name="imageFiles[]"
       class="avatar-uploader">
       <img v-if="imageUrlData" :src="imageUrlData" class="avatar">

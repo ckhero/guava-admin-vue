@@ -113,6 +113,28 @@ export default new Router({
 
 export const asyncRouterMap = [
   {
+    path: '/user',
+    component: Layout,
+    redirect: '/user/index',
+    alwaysShow: true, // will always show the root menu
+    meta: {
+      title: '用户管理',
+      icon: 'list',
+      roles: ['guava'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/user/index'),
+        name: '用户列表',
+        meta: {
+          title: '用户列表',
+          roles: ['guava']
+        }
+      }
+    ]
+  },
+  {
     path: '/lesson',
     component: Layout,
     redirect: '/lesson/index',
@@ -129,6 +151,28 @@ export const asyncRouterMap = [
         name: '课程列表',
         meta: {
           title: '课程列表',
+          roles: ['guava']
+        }
+      }
+    ]
+  },
+  {
+    path: '/order',
+    component: Layout,
+    redirect: '/order/index',
+    alwaysShow: true, // will always show the root menu
+    meta: {
+      title: '订单管理',
+      icon: 'list',
+      roles: ['guava'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/order/index'),
+        name: '订单列表',
+        meta: {
+          title: '订单列表',
           roles: ['guava']
         }
       }
