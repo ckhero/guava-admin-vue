@@ -88,6 +88,12 @@
               </el-col>
             </el-col>
             <el-col :span="4" :offset="1" style="padding-top: 10px;">
+              <label>题目解析</label>
+            </el-col>
+            <el-col :span="16" style="padding-top: 10px;padding-left: 20px;">
+              <el-input v-model="item.lesson_question_explanation" type="textarea" />
+            </el-col>
+            <el-col :span="4" :offset="1" style="padding-top: 10px;">
               <label>选项</label>
             </el-col>
             <el-col :span="16" style="padding-left: 0px;">
@@ -346,6 +352,7 @@ export default {
           }
         ],
         lesson_question_detail: '',
+        lesson_question_explanation: '',
         lesson_question_sort: questionNum,
         lesson_question_type: 'text',
         lesson_question_right_option: 'A'
