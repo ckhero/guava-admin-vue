@@ -4,7 +4,7 @@
       :show-file-list="false"
       :on-success="handleAvatarSuccess"
       :before-upload="beforeAvatarUpload"
-      action="http://www.passexam.me/v1/upload/save"
+      action="http://www.goodexam.com.cn/v1/upload/save"
       name="imageFiles[]"
       class="avatar-uploader">
       <img v-if="imageUrlData" :src="imageUrlData" class="avatar">

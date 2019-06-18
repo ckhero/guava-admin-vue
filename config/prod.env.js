@@ -1,5 +1,5 @@
 module.exports = {
   NODE_ENV: '"production"',
   ENV_CONFIG: '"prod"',
-  BASE_API: '"http://www.passexam.me"'
+  BASE_API: '"http://www.goodexam.com.cn"'
 }
