@@ -198,6 +198,9 @@ export default {
         for (var i = 0; i < strArr.length; i++) {
           newNum = (i === 0 && strArr[i] === 0 ? '' : (i > 0 && strArr[i] === 0 && strArr[i - 1] === 0 ? '' : changeNum[strArr[i]] + (strArr[i] === 0 ? unit[0] : unit[i]))) + newNum
         }
+        if (temp >= 10 && temp < 20) {
+          newNum = newNum.substring(1)
+        }
         return newNum
       }
       const overWan = Math.floor(num / 10000)
