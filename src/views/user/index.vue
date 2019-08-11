@@ -8,6 +8,7 @@
         <el-option v-for="item in payStatusOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
       </el-select>
       <el-button v-waves type="primary" icon="el-icon-search" @click="handleFilter">{{ $t('table.search') }}</el-button>
+      <el-button style="margin:0 0 20px 20px;" type="primary" icon="document" @click="handleDownload">{{ $t('excel.export') }} Excel</el-button>
     </div>
 
     <el-table
@@ -56,6 +57,7 @@
 <script>
 import waves from '@/directive/waves' // Waves directive
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import { parseTime } from '@/utils'
 
 const payStatusOptions = [
   { key: 'yes', display_name: '已支付', class: 'success' },
@@ -88,14 +90,21 @@ export default {
     return {
       tableKey: 0,
       list: null,
+      allList: null,
       total: 0,
       listLoading: true,
+      filename: '用户列表',
       listQuery: {
         page: 1,
         limit: 20,
         user_id: null,
         user_name: null,
         user_phone: null,
+        user_pay_status: null
+      },
+      allQuery: {
+        page: 1,
+        limit: 100000,
         user_pay_status: null
       },
       payStatusOptions
@@ -106,6 +115,7 @@ export default {
   },
   methods: {
     getList() {
+      console.log(this.listQuery)
       this.listLoading = true
       this.api.v1.ptUser.list(this.listQuery).then((res) => {
         this.total = res.data.total
@@ -114,6 +124,36 @@ export default {
       }).catch(() => {
         this.listLoading = false
       })
+    },
+    handleDownload() {
+      this.allQuery.user_pay_status = this.listQuery.user_pay_status
+      console.log(this.allQuery)
+      this.api.v1.ptUser.list(this.allQuery).then((res) => {
+        this.allList = res.data.list
+        import('@/vendor/Export2Excel').then(excel => {
+          const tHeader = ['ID', '用户名字', '用户手机号', '用户积分', '支付状态', '创建时间']
+          const filterVal = ['user_id', 'user_name', 'user_phone', 'user_point', 'user_pay_status', 'user_create_at']
+          const list = this.allList
+          const data = this.formatJson(filterVal, list)
+          excel.export_json_to_excel({
+            header: tHeader,
+            data,
+            filename: this.filename,
+            autoWidth: this.autoWidth,
+            bookType: this.bookType
+          })
+        })
+      }).catch(() => {
+      })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => {
+        if (j === 'timestamp') {
+          return parseTime(v[j])
+        } else {
+          return v[j]
+        }
+      }))
     },
     handleFilter() {
       this.listQuery.page = 1
